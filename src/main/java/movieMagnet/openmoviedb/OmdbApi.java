@@ -35,7 +35,7 @@ public class OmdbApi implements OmdbApiInterface {
 
 	@Override
 	public SearchResultOmdb searchForType(String title, MovieType type) {
-		String url = String.format(SEARCH_FOR_TYPE_URL, title, type.toString(), apiKey);
+		String url = String.format(SEARCH_FOR_TYPE_URL, title, apiKey, type.toString());
 		return restTemplate.getForObject(url, SearchResultOmdb.class);
 	}
 

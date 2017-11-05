@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import movieMagnet.openmoviedb.OmdbApiInterface;
+import movieMagnet.openmoviedb.model.MovieType;
 import movieMagnet.themoviedb.TmdbApiInterface;
 
 
@@ -19,13 +20,29 @@ public class ApiController {
 	public OmdbApiInterface omdb;
 
 	@RequestMapping("/tmdb/news")
-	public String index() {
-		return tmdb.fetchNews();
+	public String news() {
+		return tmdb.fetchNews().toString();
+	}
+	
+	@RequestMapping("/tmdb/searchMovie")
+	public String movies(@RequestParam("query") String query, @RequestParam("page") Integer page, @RequestParam("adult") Boolean includeAdult) {
+		return tmdb.searchMovie(query, page, includeAdult).toString();
+	}
+	
+	@RequestMapping("/tmdb/searchTvShow")
+	public String tvShows(@RequestParam("query") String query, @RequestParam("page") Integer page) {
+		return tmdb.searchTvShow(query, page).toString();
 	}
 	
 	@RequestMapping("/omdb/searchTitle")
-	public String title(@RequestParam("title") String title) {
-		return omdb.searchForTitle(title);
+	public String movieTitle(@RequestParam("title") String title) {
+		return omdb.searchForTitle(title).toString();
+	}
+	
+	
+	@RequestMapping("/omdb/searchType")
+	public String movieType(@RequestParam("title") String title, @RequestParam("type") MovieType type) {
+		return omdb.searchForType(title, type).toString();
 	}
 
 	public TmdbApiInterface getHelper() {
