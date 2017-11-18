@@ -5,18 +5,13 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import movieMagnet.dao.*;
+import movieMagnet.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import movieMagnet.dao.PrivilegeRepository;
-import movieMagnet.dao.RoleRepository;
-import movieMagnet.dao.UserRepository;
-import movieMagnet.model.Privilege;
-import movieMagnet.model.Role;
-import movieMagnet.model.User;
 
 @Component
 public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
@@ -29,7 +24,6 @@ public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
 	private RoleRepository roleRepo;
 	@Autowired
 	private PrivilegeRepository privRepo;
-
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -40,7 +34,7 @@ public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
 			return;
 		}
 
-		Privilege readPriv = createPriviliegeIfNotFound("READ_PRIV");
+		Privilege readPriv = createPrivilegeIfNotFound("READ_PRIV");
 		List<Privilege> adminPrivs = Arrays.asList(readPriv);
 		List<Privilege> userPrivs = Arrays.asList(readPriv);
 		createRoleIfNotFound("ROLE_ADMIN", adminPrivs);
@@ -70,7 +64,7 @@ public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
 		return role;
 	}
 
-	private Privilege createPriviliegeIfNotFound(String name) {
+	private Privilege createPrivilegeIfNotFound(String name) {
 		Privilege priv = privRepo.findByName(name);
 		if (priv == null) {
 			priv = new Privilege();
@@ -79,5 +73,4 @@ public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
 		}
 		return priv;
 	}
-
 }
