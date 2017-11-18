@@ -19,6 +19,7 @@ public class User {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Collection<Role> roles;
+	private Collection<Tag> tags;
 
 	public User() {
 		super();
@@ -88,4 +89,7 @@ public class User {
 		this.roles = roles;
 	}
 
+	public Collection<Tag> getTags() { return tags;	}
+
+	public void setTags(Collection<Tag> tags) {	this.tags = tags; }
 }
