@@ -13,7 +13,7 @@ public class Role {
 	@ManyToMany(mappedBy = "roles")
 	private Collection<User> users;
 	@ManyToMany
-	@JoinTable(name = "role_priv", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+	@JoinTable(name = "role_priv", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "priv_id", referencedColumnName = "id"))
 	private Collection<Privilege> privileges;
 
 	public Role(String name) {

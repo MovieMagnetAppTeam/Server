@@ -1,9 +1,6 @@
 package movieMagnet.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
@@ -12,7 +9,14 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String review;
+    @OneToMany(mappedBy="review_comments")
     private Collection<Comment> comments;
+    @ManyToOne
+    @JoinColumn(name="user_fk")
+    private Long userId;
+    @ManyToOne
+    @JoinColumn(name="movie_fk")
+    private Long movieId;
 
     public Long getId() { return id; }
 
@@ -25,5 +29,13 @@ public class Review {
     public Collection<Comment> getComments() { return comments; }
 
     public void setComments(Collection<Comment> comments) { this.comments = comments; }
+
+    public Long getUserId() { return userId; }
+
+    public void setUserId(Long userId) { this.userId = userId; }
+
+    public Long getMovieId() { return movieId; }
+
+    public void setMovieId(Long movieId) { this.movieId = movieId; }
 }
 

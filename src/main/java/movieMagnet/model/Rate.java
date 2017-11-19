@@ -1,9 +1,6 @@
 package movieMagnet.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Rate {
@@ -11,7 +8,12 @@ public class Rate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private int rate;
+    @ManyToOne
+    @JoinColumn(name="user_fk")
     private Long userId;
+    @ManyToOne
+    @JoinColumn(name="movie_fk")
+    private Long movieId;
 
     public Rate(int rate) { this.rate = rate; }
 

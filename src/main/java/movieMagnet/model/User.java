@@ -19,7 +19,13 @@ public class User {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Collection<Role> roles;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "users_tags", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
 	private Collection<Tag> tags;
+	@OneToMany(mappedBy="user_comments")
+	private Collection<Comment> comments;
+	@OneToMany(mappedBy="user_reviews")
+	private Collection<Review> reviews;
 
 	public User() {
 		super();
@@ -92,4 +98,12 @@ public class User {
 	public Collection<Tag> getTags() { return tags;	}
 
 	public void setTags(Collection<Tag> tags) {	this.tags = tags; }
+
+	public Collection<Comment> getComments() { return comments; }
+
+	public void setComments(Collection<Comment> comments) { this.comments = comments; }
+
+	public Collection<Review> getReviews() { return reviews; }
+
+	public void setReviews(Collection<Review> reviews) { this.reviews = reviews; }
 }
