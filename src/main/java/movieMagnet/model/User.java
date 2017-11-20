@@ -19,14 +19,19 @@ public class User {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Collection<Role> roles;
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "users_tags", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
 	private Collection<Tag> tags;
-	@OneToMany(mappedBy="user_comments")
+	@OneToMany(mappedBy="author")
 	private Collection<Comment> comments;
-	@OneToMany(mappedBy="user_reviews")
+	@OneToMany(mappedBy="author")
 	private Collection<Review> reviews;
-
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "users_movies", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"))
+	private Collection<Movie> movies;
+	@OneToMany(mappedBy="author")
+	private Collection<Rate> rates;
+	
 	public User() {
 		super();
 	}
