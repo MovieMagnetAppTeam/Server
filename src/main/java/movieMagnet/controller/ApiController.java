@@ -1,11 +1,14 @@
 package movieMagnet.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import movieMagnet.dto.CredentialsDto;
 import movieMagnet.dto.UserDto;
 import movieMagnet.openmoviedb.OmdbApiInterface;
 import movieMagnet.openmoviedb.model.MovieType;
@@ -50,13 +53,13 @@ public class ApiController {
 		return omdb.searchForType(title, type).toString();
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/login", headers = "Content-Type=application/x-www-form-urlencoded")
-	public String login(@RequestParam("p") String password, @RequestParam("l") String login) {
-		return userService.login(password, login).toString();
-	}
-
-	@RequestMapping(method = RequestMethod.POST, value = "/register", headers = "Content-Type=application/x-www-form-urlencoded")
-	public String register(@RequestParam("user") UserDto user) {
+//	@RequestMapping(method = RequestMethod.POST, value = "/login", headers = "Content-Type:application/x-www-form-urlencoded")
+//	public String login(@RequestBody CredentialsDto creds) {
+//		return userService.login(creds.getPassword(), creds.getLogin()).toString();
+//	}
+//
+	@RequestMapping(method = RequestMethod.POST, value = "/register", consumes="application/json")
+	public String register(@RequestBody UserDto user) {
 		return userService.register(user).toString();
 	}
 
@@ -66,6 +69,11 @@ public class ApiController {
 
 	public void setHelper(TmdbApiInterface helper) {
 		this.tmdb = helper;
+	}
+	
+	@ExceptionHandler({Exception.class})
+	public void resolveException(Exception e) {
+	    e.printStackTrace();
 	}
 
 }

@@ -51,6 +51,7 @@ public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
 		user.setName("adm");
 		user.setLastname("adm");
 		user.setPassword(passwordEncoder.encode("admin"));
+		user.setSecret(passwordEncoder.encode("admin"));
 		user.setEmail("admin@admin.com");
 		user.setRoles(Arrays.asList(adminRole));
 		user.setEnabled(true);

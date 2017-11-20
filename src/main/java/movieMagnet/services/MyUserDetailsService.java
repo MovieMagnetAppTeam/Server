@@ -32,8 +32,8 @@ public class MyUserDetailsService implements UserDetailsService {
 			if (user == null) {
 				throw new UsernameNotFoundException("Can't find user with email" + email);
 			}
-			return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getSecret(),
-					user.isEnabled(), true, true, true, getAuthorities(user.getRoles()));
+			return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
+					true, true, true, true, getAuthorities(user.getRoles()));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

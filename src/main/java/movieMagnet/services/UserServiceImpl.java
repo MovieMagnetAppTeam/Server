@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import movieMagnet.dao.RoleRepository;
 import movieMagnet.dao.UserRepository;
 import movieMagnet.dto.UserDto;
 import movieMagnet.model.Role;
@@ -15,6 +16,8 @@ import movieMagnet.model.User;
 public class UserServiceImpl implements UserService {
 	@Autowired
 	UserRepository userRepo;
+	@Autowired
+	RoleRepository roleRepo;
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
@@ -29,7 +32,7 @@ public class UserServiceImpl implements UserService {
 		userEnt.setLastname(user.getLastName());
 		userEnt.setName(user.getFirstName());
 		userEnt.setPassword(passwordEncoder.encode(user.getPassword()));
-		userEnt.setRoles(Arrays.asList(new Role("ROLE_USER")));
+		userEnt.setRoles(Arrays.asList(roleRepo.findByName("ROLE_USER")));
 
 		return userRepo.save(userEnt);
 
