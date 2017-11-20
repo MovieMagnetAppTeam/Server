@@ -19,7 +19,19 @@ public class User {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Collection<Role> roles;
-
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "users_tags", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
+	private Collection<Tag> tags;
+	@OneToMany(mappedBy="author")
+	private Collection<Comment> comments;
+	@OneToMany(mappedBy="author")
+	private Collection<Review> reviews;
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "users_movies", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"))
+	private Collection<Movie> movies;
+	@OneToMany(mappedBy="author")
+	private Collection<Rate> rates;
+	
 	public User() {
 		super();
 	}
@@ -88,4 +100,15 @@ public class User {
 		this.roles = roles;
 	}
 
+	public Collection<Tag> getTags() { return tags;	}
+
+	public void setTags(Collection<Tag> tags) {	this.tags = tags; }
+
+	public Collection<Comment> getComments() { return comments; }
+
+	public void setComments(Collection<Comment> comments) { this.comments = comments; }
+
+	public Collection<Review> getReviews() { return reviews; }
+
+	public void setReviews(Collection<Review> reviews) { this.reviews = reviews; }
 }
