@@ -111,4 +111,7 @@ public class User {
 	public Collection<Review> getReviews() { return reviews; }
 
 	public void setReviews(Collection<Review> reviews) { this.reviews = reviews; }
+
+
+	
 }

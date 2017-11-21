@@ -1,6 +1,7 @@
 package movieMagnet.services;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +11,7 @@ import movieMagnet.dao.RoleRepository;
 import movieMagnet.dao.UserRepository;
 import movieMagnet.dto.UserDto;
 import movieMagnet.model.Role;
+import movieMagnet.model.Tag;
 import movieMagnet.model.User;
 
 @Service
@@ -59,6 +61,19 @@ public class UserServiceImpl implements UserService {
 				return null;
 			}
 		}
+	}
+	@Override
+	public void addTagsToUser(User user, List<Tag> tags) {
+		List<Tag> tagList = (List<Tag>) user.getTags();
+		tagList.addAll(tags);
+		tagList.addAll(tagList);
+		user.setTags(tagList);
+		userRepo.save(user);
+	}
+	
+	@Override
+	public User getUserByEmail(String email) {
+		return userRepo.findByEmail(email);
 	}
 
 }

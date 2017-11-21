@@ -1,5 +1,6 @@
 package movieMagnet.themoviedb;
 
+import movieMagnet.themoviedb.model.Genres;
 import movieMagnet.themoviedb.model.SearchResultTmdb;
 
 public interface TmdbApiInterface {
@@ -8,4 +9,6 @@ public interface TmdbApiInterface {
 	public SearchResultTmdb searchMovie(String query, Integer page, Boolean includeAdult);
 
 	public SearchResultTmdb searchTvShow(String query, Integer page);
+	
+	public Genres getGenresList();
 }

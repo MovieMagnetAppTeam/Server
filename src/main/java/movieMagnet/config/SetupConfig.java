@@ -1,5 +1,6 @@
 package movieMagnet.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,6 +8,11 @@ import javax.transaction.Transactional;
 
 import movieMagnet.dao.*;
 import movieMagnet.model.*;
+import movieMagnet.services.TagsService;
+import movieMagnet.services.UserService;
+import movieMagnet.themoviedb.TmdbApiInterface;
+import movieMagnet.themoviedb.model.Genres;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -26,14 +32,21 @@ public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
 	private PrivilegeRepository privRepo;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
+	@Autowired
+	private TagsService tagsService;
+	@Autowired
+	private TmdbApiInterface tmdb;
+	@Autowired
+	private TagRepository tagsRepo;
+	@Autowired
+	private UserService userService;
+	
 	@Override
 	@Transactional
 	public void onApplicationEvent(ContextRefreshedEvent arg0) {
 		if (alreadySetup) {
 			return;
 		}
-
 		Privilege readPriv = createPrivilegeIfNotFound("READ_PRIV");
 		List<Privilege> adminPrivs = Arrays.asList(readPriv);
 		List<Privilege> userPrivs = Arrays.asList(readPriv);
@@ -50,7 +63,6 @@ public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
 		user.setRoles(Arrays.asList(adminRole));
 		user.setEnabled(true);
 		userRepo.save(user);
-
 		alreadySetup = true;
 	}
 
@@ -74,4 +86,6 @@ public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
 		}
 		return priv;
 	}
+	
+
 }

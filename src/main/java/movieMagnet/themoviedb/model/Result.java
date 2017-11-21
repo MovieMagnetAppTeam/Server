@@ -1,4 +1,6 @@
 package movieMagnet.themoviedb.model;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,6 +18,9 @@ public class Result {
 	private String originalTitle;
 	@JsonProperty("vote_average")
 	private float voteAvg;
+	@JsonProperty("genre_ids")
+	private List<String> ids;
+	
 
 	public String getPoster() {
 		return "https://image.tmdb.org/t/p/w500"+poster;
@@ -73,10 +78,20 @@ public class Result {
 		this.voteAvg = voteAvg;
 	}
 
+
 	@Override
 	public String toString() {
 		return "Result [poster=" + poster + ", adult=" + adult + ", overview=" + overview + ", released=" + released
-				+ ", title=" + title + ", originalTitle=" + originalTitle + ", voteAvg=" + voteAvg + "]";
+				+ ", title=" + title + ", originalTitle=" + originalTitle + ", voteAvg=" + voteAvg  + "]";
 	}
+
+	public List<String> getIds() {
+		return ids;
+	}
+
+	public void setIds(List<String> ids) {
+		this.ids = ids;
+	}
+
 
 }

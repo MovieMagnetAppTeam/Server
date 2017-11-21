@@ -6,20 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.sym.Name;
+
 import movieMagnet.config.KeyChainConfig;
+import movieMagnet.themoviedb.model.Genres;
 import movieMagnet.themoviedb.model.SearchResultTmdb;
 
 @Service
 public class TmdbApi implements TmdbApiInterface {
 	private String key = "";
 	private String readAccessToken = "";
+	private static final String GENRES_URL = "https://api.themoviedb.org/3/genre/movie/list?api_key=%s&language=en-US";
 	private static final String UPCOMING_URL = "https://api.themoviedb.org/3/movie/upcoming?api_key=%s&language=en-US&page=1";
 	private static final String SEARCH_MOVIES_URL = "https://api.themoviedb.org/3/search/movie?api_key=%s&language=en-US&query=%s&page=%d&include_adult=%s";
 	private static final String SEARCH_SERIES_URL = "https://api.themoviedb.org/3/search/tv?api_key=%s&language=en-US&query=%s&page=%d";
-	/*
-	 * Example request: https://api.themoviedb.org/3/movie/550?api_key=
-	 * 63695ff09031431214f5e6a27f684a1d
-	 */
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -50,5 +50,13 @@ public class TmdbApi implements TmdbApiInterface {
 		String url = String.format(SEARCH_SERIES_URL, key, query, page);
 		return restTemplate.getForObject(url, SearchResultTmdb.class);
 	}
+
+	@Override
+	public Genres getGenresList() {
+		String url = String.format(GENRES_URL, key);
+		return restTemplate.getForObject(url, Genres.class);
+	}
+	
+
 
 }
