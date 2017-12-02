@@ -6,24 +6,31 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import movieMagnet.dao.*;
-import movieMagnet.model.*;
-import movieMagnet.services.TagsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import movieMagnet.dao.PrivilegeRepository;
+import movieMagnet.dao.RoleRepository;
+import movieMagnet.dao.TagRepository;
+import movieMagnet.dao.UserRepository;
+import movieMagnet.model.Privilege;
+import movieMagnet.model.Role;
+import movieMagnet.model.Tag;
+import movieMagnet.model.User;
 import movieMagnet.services.UserService;
 import movieMagnet.themoviedb.TmdbApiInterface;
 import movieMagnet.themoviedb.model.Genres;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
 @Component
-public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
+public class SetupConfig {
 
 	private boolean alreadySetup = false;
 
+	@Autowired
+	public UserService userService;
 	@Autowired
 	private UserRepository userRepo;
 	@Autowired
@@ -33,20 +40,23 @@ public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired
-	private TagsService tagsService;
-	@Autowired
-	private TmdbApiInterface tmdb;
-	@Autowired
 	private TagRepository tagsRepo;
 	@Autowired
-	private UserService userService;
-	
-	@Override
-	@Transactional
-	public void onApplicationEvent(ContextRefreshedEvent arg0) {
+	public TmdbApiInterface tmdb;
+
+	@EventListener
+	public void init(ApplicationReadyEvent event) {
 		if (alreadySetup) {
 			return;
 		}
+		initUser();
+		initTags();
+		initUserTags();
+		alreadySetup = true;
+	}
+
+	@Transactional
+	private void initUser() {
 		Privilege readPriv = createPrivilegeIfNotFound("READ_PRIV");
 		List<Privilege> adminPrivs = Arrays.asList(readPriv);
 		List<Privilege> userPrivs = Arrays.asList(readPriv);
@@ -63,7 +73,6 @@ public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
 		user.setRoles(Arrays.asList(adminRole));
 		user.setEnabled(true);
 		userRepo.save(user);
-		alreadySetup = true;
 	}
 
 	@Transactional
@@ -77,6 +86,7 @@ public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
 		return role;
 	}
 
+	@Transactional
 	private Privilege createPrivilegeIfNotFound(String name) {
 		Privilege priv = privRepo.findByName(name);
 		if (priv == null) {
@@ -86,6 +96,26 @@ public class SetupConfig implements ApplicationListener<ContextRefreshedEvent> {
 		}
 		return priv;
 	}
-	
 
+	@Transactional
+	private void initUserTags() {
+		User user = userService.getUserByEmail("admin@admin.com");
+		List<Tag> tagslist = new ArrayList<Tag>();
+		tagslist.add(tagsRepo.findByName("Adventure"));
+		tagslist.add(tagsRepo.findByName("Animation"));
+		tagslist.add(tagsRepo.findByName("Music"));
+		userService.addTagsToUser(user, tagslist);
+	}
+
+	@Transactional
+	private void initTags() {
+		Genres genres = tmdb.getGenresList();
+		System.out.println(genres.toString());
+		for (movieMagnet.themoviedb.model.Tag tag : genres.getTags()) {
+			Tag modelTag = new Tag();
+			modelTag.setName(tag.getName());
+			modelTag.setTagId(tag.getId());
+			tagsRepo.save(modelTag);
+		}
+	}
 }

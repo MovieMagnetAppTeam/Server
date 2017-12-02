@@ -11,19 +11,19 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 public class MovieMagnetApplication extends SpringBootServletInitializer {
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return configureApplication(builder);
-    }
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return configureApplication(builder);
+	}
 
-    public static void main(String[] args) {
-        configureApplication(new SpringApplicationBuilder()).run(args);
-    }
+	public static void main(String[] args) {
+		configureApplication(new SpringApplicationBuilder()).run(args);
+	}
 
-    private static SpringApplicationBuilder configureApplication(SpringApplicationBuilder builder) {
-        return builder.sources(MovieMagnetApplication.class).bannerMode(Banner.Mode.OFF);
-    }
-	
+	private static SpringApplicationBuilder configureApplication(SpringApplicationBuilder builder) {
+		return builder.sources(MovieMagnetApplication.class).bannerMode(Banner.Mode.OFF);
+	}
+
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 		return builder.build();
