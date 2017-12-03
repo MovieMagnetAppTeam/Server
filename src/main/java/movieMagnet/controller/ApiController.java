@@ -16,55 +16,62 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import movieMagnet.dto.MovieDto;
 import movieMagnet.dto.TagDto;
 import movieMagnet.dto.UserDto;
 import movieMagnet.model.Tag;
 import movieMagnet.openmoviedb.OmdbApiInterface;
-import movieMagnet.openmoviedb.model.MovieType;
 import movieMagnet.openmoviedb.model.SearchResultOmdb;
+import movieMagnet.services.ExternalService;
+import movieMagnet.services.MovieService;
 import movieMagnet.services.TagsService;
 import movieMagnet.services.UserService;
 import movieMagnet.themoviedb.TmdbApiInterface;
 import movieMagnet.themoviedb.model.Genres;
-import movieMagnet.themoviedb.model.Result;
 import movieMagnet.themoviedb.model.SearchResultTmdb;
 
 @RestController
 public class ApiController {
+	@Autowired
+	private ExternalService extService;
+	
+	@Autowired
+	private TmdbApiInterface tmdb;
+
 
 	@Autowired
-	public TmdbApiInterface tmdb;
-
-	@Autowired
-	public OmdbApiInterface omdb;
+	private OmdbApiInterface omdb;
 
 	@Autowired
 	public UserService userService;
 
 	@Autowired
 	public TagsService tagsService;
+	
+	@Autowired
+	public MovieService movieService;
 
-	@RequestMapping("/tmdb/news")
-	public ResponseEntity<SearchResultTmdb> news() {
-		return new ResponseEntity<SearchResultTmdb>(tmdb.fetchNews(), HttpStatus.OK);
+	@RequestMapping("news")
+	public ResponseEntity<List<MovieDto>> news() {
+		return new ResponseEntity<List<MovieDto>>(extService.fetchNews(), HttpStatus.OK);
 	}
 
-	@RequestMapping("/tmdb/news/filter")
-	public ResponseEntity<List<Result>> filteredNews() {
-		List<Result> results = tmdb.fetchNews().getResults();
+	@RequestMapping("news/filter")
+	public ResponseEntity<List<MovieDto>> filteredNews() {
+		List<MovieDto> results = extService.fetchNews();
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String email = authentication.getName();
 		List<String> userTagIds = getTagIds((Set<Tag>) tagsService.getUserTags(userService.getUserByEmail(email)));
-		List<Result> filtered = new ArrayList<Result>();
-		for (Result result : results) {
-			for (String tagId : result.getIds()) {
+		List<MovieDto> filtered = new ArrayList<MovieDto>();
+		for (MovieDto result : results) {
+			for (String tagId : result.getGenres()) {
 				if (userTagIds.contains(tagId)) {
 					filtered.add(result);
 					break;
 				}
 			}
 		}
-		return new ResponseEntity<List<Result>>(filtered, HttpStatus.OK);
+		return new ResponseEntity<List<MovieDto>>(filtered, HttpStatus.OK);
 	}
 
 	private List<String> getTagIds(Set<Tag> userTags) {
@@ -75,35 +82,38 @@ public class ApiController {
 		return strings;
 	}
 
-	@RequestMapping("/tmdb/searchMovie")
-	public ResponseEntity<SearchResultTmdb> movies(@RequestParam("query") String query,
-			@RequestParam("page") Integer page, @RequestParam("adult") Boolean includeAdult) {
-		return new ResponseEntity<SearchResultTmdb>(tmdb.searchMovie(query, page, includeAdult), HttpStatus.OK);
+	@RequestMapping("search_movie")
+	public ResponseEntity<List<MovieDto>> movies(@RequestParam("query") String query) {
+		return new ResponseEntity<List<MovieDto>>(extService.searchMovie(query), HttpStatus.OK);
+	}
+	
+	@RequestMapping("search_movie_debug_tmdb")
+	public ResponseEntity<SearchResultTmdb> tmdb(@RequestParam("query") String query) {
+		return new ResponseEntity<SearchResultTmdb>(tmdb.searchMovie(query), HttpStatus.OK);
+	}
+	
+	@RequestMapping("search_movie_debug_omdb")
+	public ResponseEntity<SearchResultOmdb> deb(@RequestParam("query") String query) {
+		return new ResponseEntity<SearchResultOmdb>(omdb.searchForTitle(query), HttpStatus.OK);
+		
 	}
 
-	@RequestMapping("/tmdb/searchTvShow")
-	public ResponseEntity<SearchResultTmdb> tvShows(@RequestParam("query") String query,
-			@RequestParam("page") Integer page) {
-		return new ResponseEntity<SearchResultTmdb>(tmdb.searchTvShow(query, page), HttpStatus.OK);
+	@RequestMapping("search_tv_show")
+	public ResponseEntity<List<MovieDto>> tvShows(@RequestParam("query") String query) {
+		return new ResponseEntity<List<MovieDto>>(extService.searchTvShow(query), HttpStatus.OK);
 	}
 
-	@RequestMapping("/omdb/searchTitle")
-	public ResponseEntity<SearchResultOmdb> movieTitle(@RequestParam("title") String title) {
-		return new ResponseEntity<SearchResultOmdb>(omdb.searchForTitle(title), HttpStatus.OK);
-	}
-
-	@RequestMapping("/omdb/searchType")
-	public ResponseEntity<SearchResultOmdb> movieType(@RequestParam("title") String title,
-			@RequestParam("type") MovieType type) {
-		return new ResponseEntity<SearchResultOmdb>(omdb.searchForType(title, type), HttpStatus.OK);
-	}
-
-	@RequestMapping("/tmdb/getGenres")
+	@RequestMapping("get_genres")
 	public ResponseEntity<Genres> getGenres() {
-		return new ResponseEntity<Genres>(tmdb.getGenresList(), HttpStatus.OK);
+		return new ResponseEntity<Genres>(extService.getGenresList(), HttpStatus.OK);
+	}
+	
+	@RequestMapping("get_movie_id")
+	public ResponseEntity<MovieDto> movie(@RequestParam("id") Long id) {
+		return new ResponseEntity<MovieDto>(movieService.findById(id), HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/getMyTags")
+	@RequestMapping(method = RequestMethod.GET, value = "/get_my_tags")
 	public ResponseEntity<List<TagDto>> getUserTags() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String email = authentication.getName();
@@ -133,14 +143,6 @@ public class ApiController {
 	public ResponseEntity<String> register(@RequestBody UserDto user) {
 		userService.register(user);
 		return new ResponseEntity<String>("OK", HttpStatus.OK);
-	}
-
-	public TmdbApiInterface getHelper() {
-		return tmdb;
-	}
-
-	public void setHelper(TmdbApiInterface helper) {
-		this.tmdb = helper;
 	}
 
 	@ExceptionHandler({ Exception.class })

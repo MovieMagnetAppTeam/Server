@@ -1,17 +1,17 @@
 package movieMagnet.dao;
 
-import movieMagnet.model.Tag;
-import movieMagnet.model.User;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.lang.String;
-import java.util.List;
-import java.util.Collection;
+import org.springframework.stereotype.Repository;
 
+import movieMagnet.model.Tag;
+
+@Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
 	Tag findByName(String name);
-	
-    @Override
-    void delete(Tag tag);
+
+	Tag findByTagId(String id);
+
+	@Override
+	void delete(Tag tag);
 }

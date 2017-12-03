@@ -1,5 +1,7 @@
 package movieMagnet.openmoviedb.model;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,6 +18,12 @@ public class SearchModel {
 	private MovieType type;
 	@JsonProperty("Poster")
 	private String posterLink;
+	@JsonProperty("Genre")
+	private String genre;
+	@JsonProperty("Ratings")
+	private List<Rating> ratings;
+	@JsonProperty("Plot")
+	private String plot;
 
 	public String getTitle() {
 		return title;
@@ -57,10 +65,28 @@ public class SearchModel {
 		this.posterLink = posterLink;
 	}
 
-	@Override
-	public String toString() {
-		return "SearchResult [title=" + title + ", year=" + year + ", imdbId=" + imdbId + ", type=" + type
-				+ ", posterLink=" + posterLink + "]";
+	public String getGenre() {
+		return genre;
+	}
+
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
+
+	public List<Rating> getRatings() {
+		return ratings;
+	}
+
+	public void setRatings(List<Rating> ratings) {
+		this.ratings = ratings;
+	}
+
+	public String getPlot() {
+		return plot;
+	}
+
+	public void setPlot(String plot) {
+		this.plot = plot;
 	}
 
 }

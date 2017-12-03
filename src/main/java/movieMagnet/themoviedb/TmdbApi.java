@@ -40,14 +40,14 @@ public class TmdbApi implements TmdbApiInterface {
 	}
 
 	@Override
-	public SearchResultTmdb searchMovie(String query, Integer page, Boolean includeAdult) {
-		String url = String.format(SEARCH_MOVIES_URL, key, query, page, includeAdult.toString());
+	public SearchResultTmdb searchMovie(String query) {
+		String url = String.format(SEARCH_MOVIES_URL, key, query, 1, false);
 		return restTemplate.getForObject(url, SearchResultTmdb.class);
 	}
 
 	@Override
-	public SearchResultTmdb searchTvShow(String query, Integer page) {
-		String url = String.format(SEARCH_SERIES_URL, key, query, page);
+	public SearchResultTmdb searchTvShow(String query) {
+		String url = String.format(SEARCH_SERIES_URL, key, query, 1);
 		return restTemplate.getForObject(url, SearchResultTmdb.class);
 	}
 

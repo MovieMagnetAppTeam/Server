@@ -13,8 +13,9 @@ import movieMagnet.openmoviedb.model.SearchResultOmdb;
 @Component
 public class OmdbApi implements OmdbApiInterface {
 	public static String apiKey = "";
-	public static final String SEARCH_FOR_TITLE_URL = "http://omdbapi.com/?s=%s&apikey=%s";
-	public static final String SEARCH_FOR_TYPE_URL = "http://omdbapi.com/?s=%s&apikey=%s&type=%s";
+	public static final String SEARCH_FOR_TITLE_URL = "http://omdbapi.com/?t=%s&apikey=%s";
+	public static final String SEARCH_FOR_TYPE_URL = "http://omdbapi.com/?t=%s&apikey=%s&type=%s";
+	public static final String GET_TITLE_URL = "http://omdbapi.com/?t=%s&apikey=%s";
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -36,6 +37,12 @@ public class OmdbApi implements OmdbApiInterface {
 	@Override
 	public SearchResultOmdb searchForType(String title, MovieType type) {
 		String url = String.format(SEARCH_FOR_TYPE_URL, title, apiKey, type.toString());
+		return restTemplate.getForObject(url, SearchResultOmdb.class);
+	}
+
+	@Override
+	public SearchResultOmdb getByTitle(String title) {
+		String url = String.format(GET_TITLE_URL, title, apiKey);
 		return restTemplate.getForObject(url, SearchResultOmdb.class);
 	}
 

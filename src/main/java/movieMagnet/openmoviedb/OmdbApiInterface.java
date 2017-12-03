@@ -6,5 +6,6 @@ import movieMagnet.openmoviedb.model.SearchResultOmdb;
 public interface OmdbApiInterface {
 	public SearchResultOmdb searchForTitle(String title);
 	public SearchResultOmdb searchForType(String title, MovieType type);
+	public SearchResultOmdb getByTitle(String title);
 	
 }

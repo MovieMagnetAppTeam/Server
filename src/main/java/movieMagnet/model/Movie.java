@@ -1,7 +1,17 @@
 package movieMagnet.model;
 
-import javax.persistence.*;
 import java.util.Collection;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Movie {
@@ -9,9 +19,12 @@ public class Movie {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String name;
-	private String category;
+	@Lob
 	private String description;
 	private String poster;
+	private String year;
+	private String type;
+	private String imdbId;
 	@OneToMany(mappedBy = "movie")
 	private Collection<Rate> rates;
 	@OneToMany(mappedBy = "movie")
@@ -34,14 +47,6 @@ public class Movie {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
 	}
 
 	public String getDescription() {
@@ -82,6 +87,30 @@ public class Movie {
 
 	public void setTags(Collection<Tag> tags) {
 		this.tags = tags;
+	}
+
+	public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getImdbId() {
+		return imdbId;
+	}
+
+	public void setImdbId(String imdbId) {
+		this.imdbId = imdbId;
 	}
 
 }
