@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
+    Review findById(String id);
+
     @Override
     void delete(Review review);
 }

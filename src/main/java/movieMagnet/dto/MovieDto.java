@@ -12,6 +12,7 @@ public class MovieDto {
 	private String type;
 	private String imdb_id;
 	private String id;
+	private List<ReviewDto> reviews;
 
 	public String getTitle() {
 		return title;
@@ -84,4 +85,8 @@ public class MovieDto {
 	public void setId(String id) {
 		this.id = id;
 	}
+
+	public List<ReviewDto> getReviews() { return reviews; }
+
+	public void setReviews(List<ReviewDto> reviews) { this.reviews = reviews; }
 }

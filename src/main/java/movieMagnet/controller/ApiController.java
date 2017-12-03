@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import movieMagnet.dto.ReviewDto;
+import movieMagnet.model.Review;
+import movieMagnet.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +25,6 @@ import movieMagnet.dto.UserDto;
 import movieMagnet.model.Tag;
 import movieMagnet.openmoviedb.OmdbApiInterface;
 import movieMagnet.openmoviedb.model.SearchResultOmdb;
-import movieMagnet.services.ExternalService;
-import movieMagnet.services.MovieService;
-import movieMagnet.services.TagsService;
-import movieMagnet.services.UserService;
 import movieMagnet.themoviedb.TmdbApiInterface;
 import movieMagnet.themoviedb.model.Genres;
 import movieMagnet.themoviedb.model.SearchResultTmdb;
@@ -50,6 +49,9 @@ public class ApiController {
 	
 	@Autowired
 	public MovieService movieService;
+
+	@Autowired
+	public ReviewService reviewService;
 
 	@RequestMapping("news")
 	public ResponseEntity<List<MovieDto>> news() {
@@ -111,6 +113,18 @@ public class ApiController {
 	@RequestMapping("get_movie_id")
 	public ResponseEntity<MovieDto> movie(@RequestParam("id") Long id) {
 		return new ResponseEntity<MovieDto>(movieService.findById(id), HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/get_movie_reviews")
+	public ResponseEntity<List<ReviewDto>> getMovieReviews(@RequestParam("id") Long id) {
+		List<ReviewDto> reviewList = new ArrayList<>(reviewService.getMovieReviews(movieService.findById(id)));
+		return new ResponseEntity<List<ReviewDto>>(reviewList, HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/add_review", consumes = "application/json")
+	public ResponseEntity<String> register(@RequestBody ReviewDto review) {
+		reviewService.addReview(review);
+		return new ResponseEntity<String>("OK", HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/get_my_tags")
