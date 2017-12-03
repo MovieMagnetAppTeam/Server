@@ -122,7 +122,7 @@ public class ApiController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/add_review", consumes = "application/json")
-	public ResponseEntity<String> register(@RequestBody ReviewDto review) {
+	public ResponseEntity<String> addReview(@RequestBody ReviewDto review) {
 		reviewService.addReview(review);
 		return new ResponseEntity<String>("OK", HttpStatus.OK);
 	}

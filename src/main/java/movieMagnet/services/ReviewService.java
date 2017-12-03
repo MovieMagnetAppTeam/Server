@@ -2,10 +2,12 @@ package movieMagnet.services;
 
 import movieMagnet.dao.MovieRepository;
 import movieMagnet.dao.ReviewRepository;
+import movieMagnet.dao.UserRepository;
 import movieMagnet.dto.MovieDto;
 import movieMagnet.dto.ReviewDto;
 import movieMagnet.model.Movie;
 import movieMagnet.model.Review;
+import movieMagnet.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,20 +20,21 @@ public class ReviewService {
     private ReviewRepository reviewRepo;
     @Autowired
     private MovieRepository movieRepo;
+    @Autowired
+    private UserRepository userRepo;
 
     public Collection<ReviewDto> getMovieReviews(MovieDto movie) {
         return movie.getReviews();
     }
 
-
     public Review getReviewById(String id) {
-        Review review = reviewRepo.findById(id);
-        return review;
+        return reviewRepo.findById(id);
     }
 
     public Review addReview(ReviewDto review) {
         Review reviewEnt = new Review();
-        reviewEnt.setAuthor(review.getAuthor());
+        User user = userRepo.findByEmail(review.getAuthor());
+        reviewEnt.setAuthor(user);
         reviewEnt.setId(review.getReviewId());
         Optional<Movie> movie = movieRepo.findById(review.getMovieId());
         movie.ifPresent(reviewEnt::setMovie);

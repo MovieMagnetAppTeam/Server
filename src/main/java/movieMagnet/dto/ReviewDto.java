@@ -11,7 +11,7 @@ public class ReviewDto {
     @JsonProperty
     private String text;
     @JsonProperty
-    private User author;
+    private String author;
     @JsonProperty
     private Long movieId;
 
@@ -31,13 +31,9 @@ public class ReviewDto {
         this.text = text;
     }
 
-    public User getAuthor() {
-        return author;
-    }
+    public String getAuthor() { return author; }
 
-    public void setAuthor(User author) {
-        this.author = author;
-    }
+    public void setAuthor(String author) { this.author = author; }
 
     public Long getMovieId() {
         return movieId;
