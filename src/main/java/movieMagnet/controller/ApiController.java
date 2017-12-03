@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import movieMagnet.dto.ReviewDto;
-import movieMagnet.model.Review;
-import movieMagnet.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +16,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import movieMagnet.dto.CommentDto;
 import movieMagnet.dto.MovieDto;
+import movieMagnet.dto.ReviewDto;
 import movieMagnet.dto.TagDto;
 import movieMagnet.dto.UserDto;
 import movieMagnet.model.Tag;
 import movieMagnet.openmoviedb.OmdbApiInterface;
 import movieMagnet.openmoviedb.model.SearchResultOmdb;
+import movieMagnet.services.CommentService;
+import movieMagnet.services.ExternalService;
+import movieMagnet.services.MovieService;
+import movieMagnet.services.ReviewService;
+import movieMagnet.services.TagsService;
+import movieMagnet.services.UserService;
 import movieMagnet.themoviedb.TmdbApiInterface;
 import movieMagnet.themoviedb.model.Genres;
 import movieMagnet.themoviedb.model.SearchResultTmdb;
@@ -52,6 +57,9 @@ public class ApiController {
 
 	@Autowired
 	public ReviewService reviewService;
+	
+	@Autowired
+	private CommentService commentService;
 
 	@RequestMapping("news")
 	public ResponseEntity<List<MovieDto>> news() {
@@ -97,7 +105,6 @@ public class ApiController {
 	@RequestMapping("search_movie_debug_omdb")
 	public ResponseEntity<SearchResultOmdb> deb(@RequestParam("query") String query) {
 		return new ResponseEntity<SearchResultOmdb>(omdb.searchForTitle(query), HttpStatus.OK);
-		
 	}
 
 	@RequestMapping("search_tv_show")
@@ -124,6 +131,12 @@ public class ApiController {
 	@RequestMapping(method = RequestMethod.POST, value = "/add_review", consumes = "application/json")
 	public ResponseEntity<String> addReview(@RequestBody ReviewDto review) {
 		reviewService.addReview(review);
+		return new ResponseEntity<String>("OK", HttpStatus.OK);
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/add_comment", consumes = "application/json")
+	public ResponseEntity<String> addReview(@RequestBody CommentDto comment) {
+		commentService.addComment(comment);
 		return new ResponseEntity<String>("OK", HttpStatus.OK);
 	}
 

@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import movieMagnet.dao.MovieRepository;
 import movieMagnet.dto.MovieDto;
+import movieMagnet.dto.ReviewDto;
 import movieMagnet.model.Movie;
+import movieMagnet.model.Review;
 import movieMagnet.model.Tag;
 
 @Service
@@ -34,6 +36,15 @@ public class MovieService {
 		}
 	}
 
+	public Movie findByIdMovie(Long id) {
+		Optional<Movie> movie = movieRepo.findById(id);
+		try {
+			return movie.get();
+		} catch (NoSuchElementException e) {
+			return null;
+		}
+	}
+
 	public Long saveMovie(MovieDto movie) {
 		Movie saved = movieRepo.findByName(movie.getTitle());
 		if (saved == null) {
@@ -45,17 +56,29 @@ public class MovieService {
 			m.setName(movie.getTitle());
 			m.setYear(movie.getYear());
 			m.setType(movie.getType());
+			List<Review> reviews = new ArrayList<Review>();
+			if (movie.getReviews() != null) {
+				for (ReviewDto review : movie.getReviews()) {
+					reviews.add(reviewService.convertDtoToReview(review));
+				}
+			}
+			m.setReviews(reviews);
 			saved = movieRepo.save(m);
 		} else {
-			if (movie.getImdb_id() != null && !movie.getImdb_id().equals(saved.getImdbId())) {
+			if (movie.getImdb_id() == null && movie.getImdb_id() != null) {
 				saved.setImdbId(movie.getImdb_id());
 				saved = movieRepo.save(saved);
 			}
-			if (movie.getYear() != null && !movie.getYear().equals(saved.getYear())) {
+			if (movie.getYear() == null && movie.getYear() != null) {
 				saved.setYear(movie.getYear());
 				saved = movieRepo.save(saved);
 			}
 		}
+		return saved.getId();
+	}
+
+	public Long update(Movie movie) {
+		Movie saved = movieRepo.save(movie);
 		return saved.getId();
 	}
 
@@ -77,6 +100,7 @@ public class MovieService {
 		dto.setGenres(convertToGenres(movie.getTags()));
 		dto.setImdb_id(movie.getImdbId());
 		dto.setId(movie.getId().toString());
+		dto.setReviews(reviewService.getMovieReviews(movie));
 		return dto;
 	}
 
