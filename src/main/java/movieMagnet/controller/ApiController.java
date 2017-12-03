@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import movieMagnet.dto.CommentDto;
+import movieMagnet.dto.CredentialsDto;
+import movieMagnet.dto.MessageDto;
 import movieMagnet.dto.MovieDto;
 import movieMagnet.dto.ReviewDto;
 import movieMagnet.dto.TagDto;
@@ -42,7 +44,6 @@ public class ApiController {
 	@Autowired
 	private TmdbApiInterface tmdb;
 
-
 	@Autowired
 	private OmdbApiInterface omdb;
 
@@ -61,6 +62,15 @@ public class ApiController {
 	@Autowired
 	private CommentService commentService;
 
+	@RequestMapping(method = RequestMethod.POST, value = "/login", consumes = "application/json")
+	public ResponseEntity<MessageDto> login(@RequestBody CredentialsDto creds){
+		if(userService.login(creds.getPassword(), creds.getLogin()) != null){
+			return new ResponseEntity<MessageDto>(new MessageDto("Login OK"), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<MessageDto>(new MessageDto("Login failed"), HttpStatus.OK);
+		}
+	}
+	
 	@RequestMapping("news")
 	public ResponseEntity<List<MovieDto>> news() {
 		return new ResponseEntity<List<MovieDto>>(extService.fetchNews(), HttpStatus.OK);
@@ -97,15 +107,15 @@ public class ApiController {
 		return new ResponseEntity<List<MovieDto>>(extService.searchMovie(query), HttpStatus.OK);
 	}
 	
-	@RequestMapping("search_movie_debug_tmdb")
-	public ResponseEntity<SearchResultTmdb> tmdb(@RequestParam("query") String query) {
-		return new ResponseEntity<SearchResultTmdb>(tmdb.searchMovie(query), HttpStatus.OK);
-	}
-	
-	@RequestMapping("search_movie_debug_omdb")
-	public ResponseEntity<SearchResultOmdb> deb(@RequestParam("query") String query) {
-		return new ResponseEntity<SearchResultOmdb>(omdb.searchForTitle(query), HttpStatus.OK);
-	}
+//	@RequestMapping("search_movie_debug_tmdb")
+//	public ResponseEntity<SearchResultTmdb> tmdb(@RequestParam("query") String query) {
+//		return new ResponseEntity<SearchResultTmdb>(tmdb.searchMovie(query), HttpStatus.OK);
+//	}
+//	
+//	@RequestMapping("search_movie_debug_omdb")
+//	public ResponseEntity<SearchResultOmdb> deb(@RequestParam("query") String query) {
+//		return new ResponseEntity<SearchResultOmdb>(omdb.searchForTitle(query), HttpStatus.OK);
+//	}
 
 	@RequestMapping("search_tv_show")
 	public ResponseEntity<List<MovieDto>> tvShows(@RequestParam("query") String query) {
@@ -129,15 +139,15 @@ public class ApiController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/add_review", consumes = "application/json")
-	public ResponseEntity<String> addReview(@RequestBody ReviewDto review) {
+	public ResponseEntity<MessageDto> addReview(@RequestBody ReviewDto review) {
 		reviewService.addReview(review);
-		return new ResponseEntity<String>("OK", HttpStatus.OK);
+		return new ResponseEntity<MessageDto>(new MessageDto("OK"), HttpStatus.OK);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/add_comment", consumes = "application/json")
-	public ResponseEntity<String> addReview(@RequestBody CommentDto comment) {
+	public ResponseEntity<MessageDto> addReview(@RequestBody CommentDto comment) {
 		commentService.addComment(comment);
-		return new ResponseEntity<String>("OK", HttpStatus.OK);
+		return new ResponseEntity<MessageDto>(new MessageDto("OK"), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/get_my_tags")
@@ -167,9 +177,9 @@ public class ApiController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/register", consumes = "application/json")
-	public ResponseEntity<String> register(@RequestBody UserDto user) {
+	public ResponseEntity<MessageDto> register(@RequestBody UserDto user) {
 		userService.register(user);
-		return new ResponseEntity<String>("OK", HttpStatus.OK);
+		return new ResponseEntity<MessageDto>( new MessageDto("OK"), HttpStatus.OK);
 	}
 
 	@ExceptionHandler({ Exception.class })

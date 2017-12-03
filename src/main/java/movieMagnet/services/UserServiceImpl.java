@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
 			return null;
 		} else {
 			User user = userRepo.findByEmail(login);
-			if (user != null && passwordEncoder.encode(user.getPassword()) == password) {
+			if (user != null && passwordEncoder.matches(password, user.getPassword())) {
 				return user;
 			} else {
 				return null;
