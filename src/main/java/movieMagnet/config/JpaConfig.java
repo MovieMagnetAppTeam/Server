@@ -57,6 +57,8 @@ public class JpaConfig {
 		Properties hibernateProperties = new Properties();
 		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
 		hibernateProperties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+		hibernateProperties.setProperty("hibernate.jdbc.lob.non_contextual_creation",
+				env.getProperty("hibernate.jdbc.lob.non_contextual_creation"));
 		return hibernateProperties;
 	}
 
@@ -65,7 +67,7 @@ public class JpaConfig {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
 		dataSource.setUrl(env.getProperty("jdbc.url"));
-		dataSource.setUsername(env.getProperty("jdb.url"));
+		dataSource.setUsername(env.getProperty("jdbc.user"));
 		dataSource.setPassword(env.getProperty("jdbc.pass"));
 		return dataSource;
 	}

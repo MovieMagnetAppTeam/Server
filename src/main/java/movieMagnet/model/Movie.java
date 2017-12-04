@@ -13,6 +13,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 public class Movie {
 	@Id
@@ -20,6 +22,7 @@ public class Movie {
 	private Long id;
 	private String name;
 	@Lob
+	@Type(type = "org.hibernate.type.TextType")
 	private String description;
 	private String poster;
 	private String year;
